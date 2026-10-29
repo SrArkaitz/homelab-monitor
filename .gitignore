@@ -1,0 +1,23 @@
+# .NET
+bin/
+obj/
+*.db
+*.db-shm
+*.db-wal
+.vs/
+*.user
+
+# Angular / Node
+node_modules/
+dist/
+.angular/
+
+# Editores y SO
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+
+# Configuración local
+.env
