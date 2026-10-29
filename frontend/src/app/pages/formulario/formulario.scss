@@ -1,0 +1,79 @@
+.volver {
+  display: inline-block;
+  margin-bottom: 1rem;
+  color: var(--texto-3);
+  text-decoration: none;
+  font-size: 0.9rem;
+
+  &:hover { color: var(--texto); }
+}
+
+h1 { font-size: 1.5rem; margin-bottom: 1.25rem; }
+
+form {
+  max-width: 640px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  border: none;
+  margin: 0;
+  padding: 0;
+
+  > span, legend { font-weight: 500; font-size: 0.9rem; padding: 0; margin-bottom: 0.35rem; }
+}
+
+input:not([type='radio']):not([type='checkbox']) {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--borde);
+  border-radius: 8px;
+  background: var(--fondo);
+  color: var(--texto);
+  font: inherit;
+
+  &.mono { font-family: var(--mono); font-size: 0.9rem; }
+  &:focus { outline: none; border-color: var(--acento); box-shadow: 0 0 0 3px var(--verde-suave); }
+  &.ng-invalid.ng-touched { border-color: var(--rojo); }
+}
+
+.opciones { display: flex; flex-direction: column; gap: 0.5rem; }
+
+.opcion, .check {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 0.9rem;
+  color: var(--texto-2);
+  cursor: pointer;
+
+  input { margin-top: 0.25rem; accent-color: var(--acento); }
+  b { color: var(--texto); font-weight: 600; }
+  small { color: var(--texto-3); }
+}
+
+.opcion {
+  padding: 0.65rem 0.8rem;
+  border: 1px solid var(--borde);
+  border-radius: 8px;
+
+  &:has(input:checked) { border-color: var(--acento); background: var(--verde-suave); }
+}
+
+.dos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+
+  @media (max-width: 520px) { grid-template-columns: 1fr; }
+}
+
+.mal { color: var(--rojo); font-size: 0.8rem; }
+
+.pie { display: flex; justify-content: flex-end; gap: 0.5rem; padding-top: 0.5rem; }

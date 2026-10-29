@@ -1,0 +1,26 @@
+# Despliegue en el servidor: docker compose up -d --build
+# El panel queda en http://<ip-del-servidor>:8090
+
+services:
+  api:
+    build: ./backend
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Madrid
+      - Monitor__FallosParaCaido=2
+      # Avisos por Telegram (opcional): rellénalos en un fichero .env junto a este
+      - Avisos__Telegram__BotToken=${TELEGRAM_BOT_TOKEN:-}
+      - Avisos__Telegram__ChatId=${TELEGRAM_CHAT_ID:-}
+    volumes:
+      - monitor-datos:/data
+
+  web:
+    build: ./frontend
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "8090:80"
+
+volumes:
+  monitor-datos:

@@ -1,0 +1,93 @@
+.cabecera {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+
+  h1 { font: 500 1.6rem var(--mono); }
+}
+
+.subtitulo { margin: 0.2rem 0 0; color: var(--texto-3); }
+
+.resumen {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin-bottom: 1.5rem;
+
+  .cifra {
+    padding: 1rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    & + .cifra { border-left: 1px solid var(--borde); }
+  }
+
+  strong { font: 500 1.75rem var(--mono); }
+  small { font-size: 0.55em; color: var(--texto-3); margin-left: 0.1em; }
+  .verde { color: var(--verde); }
+  .rojo { color: var(--rojo); }
+
+  @media (max-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+
+    .cifra:nth-child(3) { border-left: none; }
+    .cifra:nth-child(n + 3) { border-top: 1px solid var(--borde); }
+  }
+}
+
+.rejilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+.servicio {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.1rem 1.2rem;
+  text-decoration: none;
+  transition: border-color 0.15s, transform 0.15s;
+
+  &:hover { border-color: var(--acento); }
+  &:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; }
+  &.caido { border-color: var(--rojo-suave); }
+  &.pausado { opacity: 0.6; }
+
+  h2 { font-size: 1.05rem; }
+}
+
+.fila { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+
+.destino {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--texto-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.error { margin: 0; font-size: 0.85rem; color: var(--rojo); }
+
+dl {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin: 0.4rem 0 0;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--borde);
+
+  div { display: flex; flex-direction: column; gap: 0.15rem; }
+  dd { margin: 0; font-size: 0.9rem; }
+}
+
+.vacio {
+  text-align: center;
+  color: var(--texto-3);
+  padding: 2.5rem 1rem;
+  grid-column: 1 / -1;
+}

@@ -1,0 +1,106 @@
+:root {
+  --fondo: #f4f6f5;
+  --superficie: #ffffff;
+  --superficie-2: #eef1ef;
+  --borde: #dde3e0;
+  --texto: #14201b;
+  --texto-2: #3e4d46;
+  --texto-3: #6f7d77;
+  --verde: #12a26b;
+  --verde-suave: rgba(18, 162, 107, 0.14);
+  --rojo: #d6453d;
+  --rojo-suave: rgba(214, 69, 61, 0.35);
+  --ambar: #d99a1c;
+  --gris: #9aa7a1;
+  --gris-suave: #e3e8e5;
+  --acento: #12a26b;
+  --sombra: 0 1px 2px rgba(20, 32, 27, 0.06), 0 4px 16px rgba(20, 32, 27, 0.05);
+  --sans: 'IBM Plex Sans', system-ui, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --radio: 10px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fondo: #0b100e;
+    --superficie: #121a17;
+    --superficie-2: #18221e;
+    --borde: #233029;
+    --texto: #e4ece8;
+    --texto-2: #b3c0ba;
+    --texto-3: #7d8c85;
+    --verde: #3ddc97;
+    --verde-suave: rgba(61, 220, 151, 0.13);
+    --rojo: #ff6b61;
+    --rojo-suave: rgba(255, 107, 97, 0.4);
+    --ambar: #f2b441;
+    --gris: #5d6b65;
+    --gris-suave: #1f2a25;
+    --acento: #3ddc97;
+    --sombra: none;
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body { margin: 0; }
+
+body {
+  background: var(--fondo);
+  color: var(--texto);
+  font: 15px/1.5 var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; }
+
+h1, h2, h3 { margin: 0; font-weight: 600; letter-spacing: -0.01em; }
+
+.mono { font-family: var(--mono); }
+
+.contenedor { max-width: 1120px; margin: 0 auto; padding: 0 1rem; }
+
+.tarjeta {
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+}
+
+.boton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.9rem;
+  border-radius: 8px;
+  border: 1px solid var(--borde);
+  background: var(--superficie);
+  color: var(--texto);
+  font: 500 0.9rem var(--sans);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+
+  &:hover:not(:disabled) { background: var(--superficie-2); }
+  &:disabled { opacity: 0.55; cursor: default; }
+  &:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; }
+
+  &.primario { background: var(--acento); border-color: var(--acento); color: #06110c; }
+  &.primario:hover:not(:disabled) { filter: brightness(1.08); background: var(--acento); }
+  &.peligro { color: var(--rojo); }
+}
+
+.aviso {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--rojo-suave);
+  background: color-mix(in srgb, var(--rojo) 10%, transparent);
+  color: var(--texto);
+}
+
+.etiqueta {
+  font: 500 0.72rem var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--texto-3);
+}

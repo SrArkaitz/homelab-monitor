@@ -1,0 +1,93 @@
+<a routerLink="/" class="volver">← Todos los servicios</a>
+
+@if (servicio(); as s) {
+  <section class="cabecera">
+    <div>
+      <div class="titulo">
+        <h1>{{ s.nombre }}</h1>
+        <app-estado [estado]="s.estado" [activo]="s.activo" [conTexto]="true" />
+      </div>
+      <p class="destino mono">{{ s.tipo === 'Http' ? 'GET' : 'TCP' }} {{ s.destino }}</p>
+    </div>
+
+    <div class="acciones">
+      <button type="button" class="boton" (click)="comprobarAhora()" [disabled]="ocupado()">Comprobar ahora</button>
+      <button type="button" class="boton" (click)="alternarPausa(s)" [disabled]="ocupado()">
+        {{ s.activo ? 'Pausar' : 'Reanudar' }}
+      </button>
+      <a class="boton" [routerLink]="['/servicios', s.id, 'editar']">Editar</a>
+      <button type="button" class="boton peligro" (click)="eliminar(s)" [disabled]="ocupado()">Eliminar</button>
+    </div>
+  </section>
+
+  @if (error(); as e) {
+    <p class="aviso">{{ e }}</p>
+  }
+
+  @if (s.activo && s.estado === 'Caido') {
+    <p class="aviso">
+      Caído desde hace {{ duracion(s.estadoDesde, ahora()) }}.
+      @if (s.ultimoError) { Último error: <span class="mono">{{ s.ultimoError }}</span> }
+    </p>
+  }
+
+  <section class="datos tarjeta">
+    <div>
+      <span class="etiqueta">Uptime 24 h</span>
+      <strong class="mono">{{ s.uptime24h !== null ? (s.uptime24h | number: '1.0-2') + '%' : '—' }}</strong>
+    </div>
+    <div>
+      <span class="etiqueta">Latencia media</span>
+      <strong class="mono">{{ s.latenciaMedia24hMs !== null ? s.latenciaMedia24hMs + ' ms' : '—' }}</strong>
+    </div>
+    <div>
+      <span class="etiqueta">En este estado</span>
+      <strong class="mono">{{ duracion(s.estadoDesde, ahora()) }}</strong>
+    </div>
+    <div>
+      <span class="etiqueta">Última comprobación</span>
+      <strong class="mono">{{ haceTiempo(s.ultimaComprobacion, ahora()) }}</strong>
+    </div>
+    <div>
+      <span class="etiqueta">Cada</span>
+      <strong class="mono">{{ s.intervaloSegundos }} s</strong>
+    </div>
+  </section>
+
+  <section class="tarjeta bloque">
+    <div class="bloque-cabecera">
+      <h2>Historial</h2>
+      <div class="periodos" role="group" aria-label="Periodo">
+        @for (p of periodos; track p.horas) {
+          <button type="button" [class.activo]="horas() === p.horas" (click)="horas.set(p.horas)">{{ p.texto }}</button>
+        }
+      </div>
+    </div>
+
+    @if (cargandoHistorial()) {
+      <p class="vacio">Cargando…</p>
+    } @else {
+      <span class="etiqueta">Disponibilidad</span>
+      <app-barra-uptime [comprobaciones]="historial()" [horas]="horas()" />
+
+      <span class="etiqueta separado">Latencia</span>
+      <app-grafica-latencia [comprobaciones]="historial()" [horas]="horas()" />
+    }
+  </section>
+
+  <section class="tarjeta bloque">
+    <h2>Últimos fallos</h2>
+    @for (f of ultimosFallos(); track f.fecha) {
+      <div class="fallo">
+        <span class="mono">{{ f.fecha | date: 'EEE d, HH:mm:ss' }}</span>
+        <span>{{ f.error ?? 'Sin detalle' }}</span>
+      </div>
+    } @empty {
+      <p class="vacio">Ningún fallo en este periodo 🎉</p>
+    }
+  </section>
+} @else if (noEncontrado()) {
+  <p class="vacio">Este servicio no existe o se ha eliminado.</p>
+} @else {
+  <p class="vacio">Cargando…</p>
+}

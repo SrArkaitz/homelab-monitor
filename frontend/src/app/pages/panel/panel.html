@@ -1,0 +1,79 @@
+<section class="cabecera">
+  <div>
+    <h1>pc-de-bill</h1>
+    <p class="subtitulo">Estado de los servicios del servidor de casa</p>
+  </div>
+  <a routerLink="/servicios/nuevo" class="boton primario">+ Añadir servicio</a>
+</section>
+
+@let resumen = store.resumen();
+
+<section class="resumen tarjeta">
+  <div class="cifra">
+    <span class="etiqueta">Funcionando</span>
+    <strong class="verde">{{ resumen.activos }}<small>/{{ resumen.total }}</small></strong>
+  </div>
+  <div class="cifra">
+    <span class="etiqueta">Caídos</span>
+    <strong [class.rojo]="resumen.caidos > 0">{{ resumen.caidos }}</strong>
+  </div>
+  <div class="cifra">
+    <span class="etiqueta">Sin datos</span>
+    <strong>{{ resumen.desconocidos }}</strong>
+  </div>
+  <div class="cifra">
+    <span class="etiqueta">Uptime medio 24 h</span>
+    <strong>
+      @if (resumen.uptimeMedio !== null) {
+        {{ resumen.uptimeMedio | number: '1.0-2' }}<small>%</small>
+      } @else {
+        —
+      }
+    </strong>
+  </div>
+</section>
+
+@if (store.error(); as error) {
+  <p class="aviso">{{ error }}</p>
+}
+
+@if (store.cargando()) {
+  <p class="vacio">Cargando servicios…</p>
+} @else {
+  <section class="rejilla">
+    @for (s of store.servicios(); track s.id) {
+      <a class="servicio tarjeta" [routerLink]="['/servicios', s.id]" [class.caido]="s.activo && s.estado === 'Caido'" [class.pausado]="!s.activo">
+        <div class="fila">
+          <h2>{{ s.nombre }}</h2>
+          <app-estado [estado]="s.estado" [activo]="s.activo" />
+        </div>
+
+        <p class="destino mono">{{ s.destino }}</p>
+
+        @if (s.activo && s.estado === 'Caido' && s.ultimoError) {
+          <p class="error">{{ s.ultimoError }}</p>
+        }
+
+        <dl>
+          <div>
+            <dt class="etiqueta">Uptime 24 h</dt>
+            <dd class="mono">{{ s.uptime24h !== null ? (s.uptime24h | number: '1.0-2') + '%' : '—' }}</dd>
+          </div>
+          <div>
+            <dt class="etiqueta">Latencia</dt>
+            <dd class="mono">{{ s.ultimaLatenciaMs !== null ? s.ultimaLatenciaMs + ' ms' : '—' }}</dd>
+          </div>
+          <div>
+            <dt class="etiqueta">Comprobado</dt>
+            <dd class="mono">{{ s.activo ? haceTiempo(s.ultimaComprobacion, ahora()) : 'pausado' }}</dd>
+          </div>
+        </dl>
+      </a>
+    } @empty {
+      <div class="vacio tarjeta">
+        <p>Aún no vigilas ningún servicio.</p>
+        <a routerLink="/servicios/nuevo" class="boton primario">Añadir el primero</a>
+      </div>
+    }
+  </section>
+}

@@ -13,8 +13,8 @@ jobs:
       run:
         working-directory: backend
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-dotnet@v5
         with:
           dotnet-version: 10.0.x
       - name: Restaurar
@@ -22,4 +22,31 @@ jobs:
       - name: Compilar
         run: dotnet build HomelabMonitor.slnx --no-restore -c Release
       - name: Tests
-        run: dotnet test HomelabMonitor.slnx --no-build -c Release --logger "console;verbosity=normal"
+        run: dotnet test HomelabMonitor.slnx --no-build -c Release --logger "trx;LogFileName=resultados.trx"
+      - name: Resumen de tests
+        if: always()
+        run: |
+          trx=$(find . -name resultados.trx | head -1)
+          if [ -n "$trx" ]; then
+            linea=$(grep -o '<Counters [^>]*>' "$trx")
+            total=$(echo "$linea" | grep -o 'total="[0-9]*"' | grep -o '[0-9]*')
+            ok=$(echo "$linea" | grep -o 'passed="[0-9]*"' | grep -o '[0-9]*')
+            fallos=$(echo "$linea" | grep -o 'failed="[0-9]*"' | grep -o '[0-9]*')
+            echo "::notice title=Tests .NET::$ok de $total pasados, $fallos fallidos"
+          fi
+
+  frontend:
+    name: Frontend (Angular)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Instalar dependencias
+        run: npm install --no-audit --no-fund
+      - name: Compilar
+        run: npm run build

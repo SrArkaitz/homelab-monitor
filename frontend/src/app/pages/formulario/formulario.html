@@ -1,0 +1,82 @@
+<a [routerLink]="editando() ? ['/servicios', id()] : ['/']" class="volver">← Volver</a>
+
+<h1>{{ editando() ? 'Editar servicio' : 'Nuevo servicio' }}</h1>
+
+<form class="tarjeta" [formGroup]="form" (ngSubmit)="guardar()" novalidate>
+  <label class="campo">
+    <span>Nombre</span>
+    <input formControlName="nombre" placeholder="Jellyfin" autocomplete="off" />
+    @if (invalido('nombre')) {
+      <small class="mal">El nombre es obligatorio.</small>
+    }
+  </label>
+
+  <fieldset class="campo">
+    <legend>Tipo de comprobación</legend>
+    <div class="opciones">
+      <label class="opcion">
+        <input type="radio" formControlName="tipo" value="Http" />
+        <span><b>HTTP</b> · hace una petición y mira el código de respuesta</span>
+      </label>
+      <label class="opcion">
+        <input type="radio" formControlName="tipo" value="Tcp" />
+        <span><b>TCP</b> · solo comprueba que el puerto acepta conexiones</span>
+      </label>
+    </div>
+  </fieldset>
+
+  <label class="campo">
+    <span>{{ tipo() === 'Http' ? 'URL' : 'Host y puerto' }}</span>
+    <input
+      class="mono"
+      formControlName="destino"
+      autocomplete="off"
+      [placeholder]="tipo() === 'Http' ? 'http://192.168.1.138:8096/health' : '192.168.1.138:22'"
+    />
+    @if (form.controls.destino.touched && form.errors?.['destino']) {
+      <small class="mal">{{ form.errors?.['destino'] }}</small>
+    }
+  </label>
+
+  <div class="dos">
+    <label class="campo">
+      <span>Comprobar cada (segundos)</span>
+      <input type="number" formControlName="intervaloSegundos" min="10" />
+      @if (invalido('intervaloSegundos')) {
+        <small class="mal">Entre 10 segundos y 1 día.</small>
+      }
+    </label>
+    <label class="campo">
+      <span>Timeout (segundos)</span>
+      <input type="number" formControlName="timeoutSegundos" min="1" max="60" />
+      @if (invalido('timeoutSegundos')) {
+        <small class="mal">Entre 1 y 60 segundos.</small>
+      } @else if (form.errors?.['timeout']) {
+        <small class="mal">{{ form.errors?.['timeout'] }}</small>
+      }
+    </label>
+  </div>
+
+  @if (tipo() === 'Http') {
+    <label class="check">
+      <input type="checkbox" formControlName="ignorarCertificado" />
+      <span>Aceptar certificados autofirmados <small>(como el de Portainer en el 9443)</small></span>
+    </label>
+  }
+
+  <label class="check">
+    <input type="checkbox" formControlName="activo" />
+    <span>Vigilar este servicio</span>
+  </label>
+
+  @if (error(); as e) {
+    <p class="aviso">{{ e }}</p>
+  }
+
+  <div class="pie">
+    <a class="boton" [routerLink]="editando() ? ['/servicios', id()] : ['/']">Cancelar</a>
+    <button type="submit" class="boton primario" [disabled]="guardando()">
+      {{ guardando() ? 'Guardando…' : 'Guardar' }}
+    </button>
+  </div>
+</form>
